@@ -23,7 +23,7 @@ kafka-server / kafka-broker -> :9092
 http://localhost:8081/h2-console
     jdbc:h2:mem:orders
 
-http://localhost:8081/h2-console
+http://localhost:8082/h2-console
     jdbc:h2:mem:payments
 
 -----------------------------------------------------------------------------------------------------------------------

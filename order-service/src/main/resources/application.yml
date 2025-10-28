@@ -21,13 +21,20 @@ spring:
         binder:
           brokers: localhost:9092
       bindings:
+        # orderCreated - Output binding name for a function that publishes order-created messages.
+        # out - binding direction - sending.
+        # 0 - index of the channel when a function has multiple inputs or outputs.
         orderCreated-out-0:
+          # Kafka topic name
           destination: order-created
+        # Input binding name for a function that consumes messages when payments are processed.
         paymentProcessed-in-0:
           destination: payment-processed
+        # Input binding name for a function that consumes messages when payments fail.
         paymentFailed-in-0:
           destination: payment-failed
     function:
+    # Spring will register them as available functions and map bindings to the functions by matching function names to binding prefixes if you rely on the default naming conventions.
       definition: paymentProcessed;paymentFailed
 
 server:
