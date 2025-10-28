@@ -39,3 +39,16 @@ spring:
 
 server:
   port: 8081
+
+#Flow
+#Order Service
+#  EventHandlers
+#    paymentProcessed()
+#    paymentFailed()
+#  OrderController
+#    Send event to 'orderCreated-out-0'.
+#
+#Payment Service
+#  PaymentConsumer
+#    processOrder()
+#      Send event to 'paymentFailed-out-0 / paymentProcessed-out-0'.
