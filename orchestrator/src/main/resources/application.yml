@@ -1,0 +1,16 @@
+# TODO 11: Add orchestrator properties.
+spring:
+  application:
+    name: orchestrator-saga
+server:
+  port: 8080
+
+services:
+  order:
+    url: http://localhost:8081
+  payment:
+    url: http://localhost:8082
+
+logging:
+  level:
+    root: INFO
