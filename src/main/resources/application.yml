@@ -1,0 +1,21 @@
+# TODO 2: Add config.
+
+server:
+  port: 8888
+
+spring:
+  application:
+    name: cloud-gateway-config-server
+  profiles:
+    #   activates the native (filesystem) backend.
+    active: native
+
+
+  cloud:
+    config:
+      server:
+        #        git:
+        #          uri: https://github.com/your-repo/configs
+        #          default-label: main
+        native:
+          search-locations: file:///C:/Users/ktheja/Work/Code/z/cloud-gateway-config-server/config-repo
