@@ -1,0 +1,21 @@
+# TODO 2: Add config.
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: cloud-gateway-sample-service
+  config:
+    import: configserver:http://localhost:8888
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1       # optional: binds explicitly to localhost
+    hostname: localhost        # optional: explicit hostname override
+
+#By default, Eureka registers each instance under the host name returned by InetAddress.getHostName(). You can force Eureka to register your service with its IP (or localhost) instead.
