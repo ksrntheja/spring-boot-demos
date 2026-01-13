@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.3</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>io.theja</groupId>
+    <artifactId>cloud-gateway-api-gateway-demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>cloud-gateway-api-gateway-demo</name>
+    <description>cloud-gateway-api-gateway-demo</description>
+    <url/>
+    <licenses>
+        <license/>
+    </licenses>
+    <developers>
+        <developer/>
+    </developers>
+    <scm>
+        <connection/>
+        <developerConnection/>
+        <tag/>
+        <url/>
+    </scm>
+    <properties>
+        <java.version>21</java.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
+    </properties>
+    <dependencies>
+        <!--                TODO 1: Add dependencies and spring-cloud.-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-oauth2-client</artifactId>-->
+<!--        </dependency>-->
+<!--        You might have mistakenly included only spring-boot-starter-oauth2-client, which is for apps acting as OAuth2 clients (e.g., logging in via Google). But since you're building a resource server that validates JWTs from incoming requests, you need the resource server starter instead.-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
+
+
+    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+
+<!--CORRECT-->
+<!--
+<dependencies>
+  <dependency>org.springframework.boot:spring-boot-starter-webflux</dependency>
+  <dependency>org.springframework.cloud:spring-cloud-starter-gateway</dependency>
+  <dependency>org.springframework.cloud:spring-cloud-starter-netflix-eureka-client</dependency>
+  <dependency>org.springframework.cloud:spring-cloud-starter-config</dependency>
+  <dependency>io.github.resilience4j:resilience4j-spring-boot2</dependency>
+  <dependency>org.springframework.boot:spring-boot-starter-actuator</dependency>
+  <dependency>io.micrometer:micrometer-registry-prometheus</dependency>
+  <dependency>org.springframework.boot:spring-boot-starter-oauth2-resource-server</dependency>
+</dependencies>
+-->
+
+<!--
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      uri: http://localhost:8888
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: sample-service
+          uri: lb://sample-service
+          predicates:
+            - Path=/sample/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+security:
+  oauth2:
+    resourceserver:
+      jwt:
+        issuer-uri: http://auth-server/default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,trace
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        failureRateThreshold: 50
+        ringBufferSizeInClosedState: 10
+        waitDurationInOpenState: 30s
+    instances:
+      sample-service:
+        baseConfig: default
+
+
+-->
+
+
+<!--
+Component	Port	Key Features
+config-server	8888	Git-backed central config
+service-registry	8761	Eureka discovery
+api-gateway	8080	Routing, JWT, rate limiting, circuit breaker
+sample-service	8081	Business API endpoint
+prometheus	9090	Metrics scraping
+grafana	3000	Dashboard
+zipkin	9411	Distributed tracing
+
+-->
