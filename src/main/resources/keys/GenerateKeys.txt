@@ -1,0 +1,6 @@
+# TODO 3: Generate keys
+# Private key
+openssl genpkey -algorithm RSA -out jwt-private.pem -pkeyopt rsa_keygen_bits:2048
+
+# Public key
+openssl rsa -pubout -in jwt-private.pem -out jwt-public.pem
