@@ -1,0 +1,24 @@
+# TODO 2: Add properties.
+spring:
+  application:
+    name: spring-cloud-config-service-a
+  config:
+    import: optional:configserver:http://admin:admin123@localhost:8888
+#  profiles:
+#    active: dev
+
+  cloud:
+    config:
+      label: main
+#      label: new-feature
+
+
+# optional: A prefix indicating that if the Config Server is unavailable or returns an error, Spring Boot will continue starting with whatever configuration it already has, rather than failing immediately.
+# Spring 2.4
+#   As of Spring Boot 2.4, the new Config Data loader replaces bootstrap.yml. You can import remote config directly in application.yml.
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, refresh
