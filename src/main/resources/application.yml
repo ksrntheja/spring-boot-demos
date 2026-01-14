@@ -1,0 +1,12 @@
+# TODO 2: Add common properties.
+
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev # default profile when none specified
+
+common.property: "Hello"
+
+
