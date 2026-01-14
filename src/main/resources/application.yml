@@ -1,0 +1,26 @@
+# TODO 2: Add properties.
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/ksrntheja/spring-cloud-config-repo.git
+          refresh-rate: 90
+# The Config Server will poll the Git repository every 15 seconds to update its local clone. The default value is 0, meaning it doesn’t cache—every client request triggers a fresh Git fetch.
+
+  # Basic auth for clients
+  security:
+    user:
+      name: admin
+      password: admin123
+
+
+
+# How Spring Cloud Config Matches File Names?
+#   It takes the application name from the URL :<port>/{application_name}/{default_profile}/{main_branch} -> looks for (1) application.yml or application.properties  (2) actuator.yml or actuator.properties (3) actuator-default.yml or actuator-default.properties.
+
