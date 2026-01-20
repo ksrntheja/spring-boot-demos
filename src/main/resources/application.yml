@@ -1,0 +1,12 @@
+# TODO 2: Add properties.
+spring:
+  application:
+    name: consul-user-service-consumer
+
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+
+server:
+  port: 8081
