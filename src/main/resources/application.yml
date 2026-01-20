@@ -1,0 +1,31 @@
+# TODO 2: Add properties.
+spring:
+  application:
+    name: consul-user-service
+
+  config:
+    import: "optional:consul:localhost:8500" # Use 'optional:' to prevent startup crash if Consul is down
+
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        register: true
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+      config:
+        enabled: true
+        watch:
+          enabled: true      # Default is true; ensures automatic updates. No need to call curl -X POST http://localhost:8080/actuator/refresh.
+          delay: 1000        # Checks for changes every 1 second (default)
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+server:
+  port: 8080
+
