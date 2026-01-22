@@ -1,0 +1,10 @@
+# TODO 2: Add properties.
+spring:
+  application:
+    name: distributed-tracing-service-one-demo
+
+# Always sample requests (1.0 = 100%)
+management:
+  tracing:
+    sampling:
+      probability: 1.0
