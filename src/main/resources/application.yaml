@@ -1,0 +1,16 @@
+# TODO 2: Add properties.
+server:
+  port: 8082
+spring:
+  application:
+    name: distributed-tracing-service-three-demo
+
+# Always sample requests (1.0 = 100%)
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+#logging:
+#  level:
+#    root: trace
