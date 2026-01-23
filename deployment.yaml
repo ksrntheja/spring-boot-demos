@@ -1,0 +1,63 @@
+# API version of Kubernetes.
+apiVersion: apps/v1
+# type of resource: Deployment: manages a set of replica pods, ensuring that a specified number of pods are running at any given time.
+kind: Deployment
+metadata:
+  # name to the deployment.
+  name: spring-app-deployment
+#  namespace: customer-one
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      # The Deployment will only manage pods that have this label.
+      app: spring-app
+  template:
+    metadata:
+      # This label is applied to every pod created from this template.
+      #  It must match the selector defined above.
+      labels:
+        app: spring-app
+    spec:
+      # containers that run within the pod.
+      containers:
+        - name: spring-app-container # name of the container.
+          image: spring-boot-app:latest
+          # pull the image only if it isn’t present on the node already.
+          # This can speed up startup times if the image is cached locally.
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080 # This exposes port 8080 on the container.
+          env:
+            - name: k8s
+              value: Kubernetes
+            - name: docker
+              value: demo
+            - name: JDK_JAVA_OPTIONS
+              value: -Dusing_env_docker3=corrected -Dusing_env_docker4=ways
+            - name: SPRING_APPLICATION_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-app-config
+                  key: SPRING_APPLICATION_NAME
+            - name: APP_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-app-config
+                  key: APP_MESSAGE
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: spring-app-secret
+                  key: DB_PASSWORD
+          resources:
+            requests:
+              cpu: "250m" # guaranteed 0.25 CPU cores.
+              memory: "512Mi" # guaranteed 512 megabytes of memory.
+            limits:
+              cpu: "500m" # will not use more than 0.5 CPU cores.
+              memory: "1Gi" #  will not use more than 1 gigabyte of memory.
+
+# docker build --progress=plain --no-cache -t spring-boot-app:latest .
+# kubectl apply -f deployment.yaml
+# kubectl get pods

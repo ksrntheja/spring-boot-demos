@@ -1,0 +1,15 @@
+apiVersion: v1
+# A Kubernetes ConfigMap is an API object used to store non-confidential data in key-value pairs,
+#   such as environment variables, configuration files, or command-line arguments.
+#  Its primary purpose is to decouple configuration details from the container image, making applications more portable and
+#   easier to manage across different environments (development, staging, production).
+kind: ConfigMap
+metadata:
+  name: spring-app-config
+data:
+  # kv format
+  APP_MESSAGE: "Hello from ConfigMap!"
+  SPRING_APPLICATION_NAME: "ConfigMap demo changed"
+
+# kubectl apply -f configmap.yaml --namespace=customer-one
+# kubectl get configmap spring-app-config -o yaml --namespace=customer-one

@@ -1,0 +1,24 @@
+# version of the autoscaling API to use - v1 - only CPU-based autoscaling.
+apiVersion: autoscaling/v1
+# type of resource: HorizontalPodAutoscaler:
+#   scale workloads (usually Deployments) based on observed metrics like CPU usage.
+kind: HorizontalPodAutoscaler
+metadata:
+  # name to the HPA resource.
+  name: spring-boot-hpa
+spec:
+  scaleTargetRef:
+    # target resource version
+    apiVersion: apps/v1
+    kind: Deployment
+    name: spring-app-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+
+# kubectl apply -f hpa.yaml --namespace=customer-one
+# kubectl get hpa --namespace=customer-one
+# C:\Users\ktheja\Work\Softwares\httpd\httpd-2.4.64-250710-win64-VS17\Apache24\bin
+# ab -n 10000 -c 100 http://localhost:31892/properties
+#  This command simulates 10,000 requests, 100 at a time, to stress the app.
+# kubectl top pods
