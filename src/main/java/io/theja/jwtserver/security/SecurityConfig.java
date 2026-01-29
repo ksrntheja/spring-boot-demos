@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 
 import io.theja.jwtserver.config.RsaKeyProperties;
@@ -55,11 +56,33 @@ public class SecurityConfig {
     }
 
 
+//    @Bean
+//    @Order(2)
+//    public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(csrf -> csrf.disable())
+//                .sessionManagement(sm ->
+//                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/auth/**").permitAll()
+//                        .requestMatchers("/actuator/**").authenticated()
+//                        .anyRequest().authenticated()
+//                )
+//                .oauth2ResourceServer(oauth2 ->
+//                        oauth2.jwt(Customizer.withDefaults()));
+//
+//        return http.build();
+//    }
+
     @Bean
     @Order(2)
     public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
+        // Standard resolver for headers (Authorization: Bearer <token>)
+        DefaultBearerTokenResolver headerResolver = new DefaultBearerTokenResolver();
+
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -67,10 +90,39 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(Customizer.withDefaults()));
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(Customizer.withDefaults())
+                        .bearerTokenResolver(request -> {
+                            // 1. Try to get token from Authorization Header first
+                            String token = headerResolver.resolve(request);
+
+                            // 2. If no header, check the Cookies
+                            if (token == null && request.getCookies() != null) {
+                                for (var cookie : request.getCookies()) {
+                                    if ("token".equals(cookie.getName())) {
+                                        return cookie.getValue();
+                                    }
+                                }
+                            }
+                            return token;
+                        })
+                );
 
         return http.build();
+    }
+
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        var configuration = new org.springframework.web.cors.CorsConfiguration();
+        // Use your actual Angular URL; do not use "*" when allowCredentials is true
+        configuration.setAllowedOrigins(java.util.List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(java.util.List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true); // REQUIRED for cookies
+
+        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 
